@@ -1,0 +1,1 @@
+import{c}from"./redux-toolkit.modern-C17kwIqd.js";const t={url:"https://github.com/All-Hands-AI/OpenReplica",screenshotSrc:""},s=c({name:"browser",initialState:t,reducers:{setUrl:(e,r)=>{e.url=r.payload},setScreenshotSrc:(e,r)=>{e.screenshotSrc=r.payload}}}),{setUrl:a,setScreenshotSrc:n}=s.actions,l=s.reducer;export{a,l as b,t as i,n as s};
