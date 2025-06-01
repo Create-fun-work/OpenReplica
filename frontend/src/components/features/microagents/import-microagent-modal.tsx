@@ -12,7 +12,7 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import { UploadIcon, FileTextIcon } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { openreplica } from '#/api/openreplica-axios';
+import OpenReplica from '#/api/openreplica';
 
 interface ImportMicroagentModalProps {
   isOpen: boolean;
@@ -34,7 +34,7 @@ export function ImportMicroagentModal({
   // Import mutation
   const mutation = useMutation({
     mutationFn: async (data: { name: string; content: string }) => {
-      return await openreplica.post('/api/microagents/import', data);
+      return await OpenReplica.importMicroagent(data.name, data.content);
     },
     onSuccess: (response) => {
       toast.success('Microagent imported successfully');

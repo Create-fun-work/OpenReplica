@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PlusIcon, CogIcon, DownloadIcon, UploadIcon } from 'lucide-react';
 import { Button } from '@heroui/react';
 import { toast } from 'react-hot-toast';
-import { openreplica } from '#/api/openreplica-axios';
+import OpenReplica from '#/api/openreplica';
 import { MicroagentCard } from './microagent-card';
 import { CreateMicroagentModal } from './create-microagent-modal';
 import { ImportMicroagentModal } from './import-microagent-modal';
@@ -43,16 +43,15 @@ export function MicroagentsPage({ className = "" }: MicroagentsPageProps) {
   const { data: microagents = [], isLoading, error } = useQuery({
     queryKey: ['microagents', selectedType],
     queryFn: async () => {
-      const params = selectedType !== 'all' ? `?microagent_type=${selectedType}` : '';
-      const response = await openreplica.get(`/api/microagents${params}`);
-      return response.data as Microagent[];
+      const type = selectedType !== 'all' ? selectedType : undefined;
+      return await OpenReplica.getMicroagents(type) as Microagent[];
     },
   });
 
   // Delete microagent mutation
   const deleteMutation = useMutation({
     mutationFn: async (name: string) => {
-      await openreplica.delete(`/api/microagents/${name}`);
+      await OpenReplica.deleteMicroagent(name);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['microagents'] });
@@ -66,8 +65,7 @@ export function MicroagentsPage({ className = "" }: MicroagentsPageProps) {
   // Export microagent mutation
   const exportMutation = useMutation({
     mutationFn: async (name: string) => {
-      const response = await openreplica.post(`/api/microagents/${name}/export`);
-      return response.data;
+      return await OpenReplica.exportMicroagent(name);
     },
     onSuccess: (data) => {
       // Create download link

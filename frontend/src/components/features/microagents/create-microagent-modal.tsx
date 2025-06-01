@@ -15,7 +15,7 @@ import {
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { PlusIcon, XIcon } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { openreplica } from '#/api/openreplica-axios';
+import OpenReplica from '#/api/openreplica';
 
 interface Microagent {
   name: string;
@@ -60,39 +60,30 @@ export function CreateMicroagentModal({
   const { data: templates } = useQuery({
     queryKey: ['microagent-templates'],
     queryFn: async () => {
-      const response = await openreplica.get('/api/microagents/builtin/templates');
-      return response.data;
+      return await OpenReplica.getMicroagentTemplates();
     },
   });
 
   // Create/Update mutation
   const mutation = useMutation({
     mutationFn: async (data: any) => {
-      if (isEditing) {
-        return await openreplica.put(`/api/microagents/${agent.name}`, {
-          name: data.name,
-          content: data.content,
-          metadata: {
-            name: data.name,
-            type: data.type,
-            version: data.version,
-            agent: data.agent_type,
-            triggers: data.triggers
-          }
-        });
-      } else {
-        return await openreplica.post('/api/microagents/', {
+      const microagentData = {
+        name: data.name,
+        type: data.type,
+        content: data.content,
+        metadata: {
           name: data.name,
           type: data.type,
-          content: data.content,
-          metadata: {
-            name: data.name,
-            type: data.type,
-            version: data.version,
-            agent: data.agent_type,
-            triggers: data.triggers
-          }
-        });
+          version: data.version,
+          agent: data.agent_type,
+          triggers: data.triggers
+        }
+      };
+
+      if (isEditing) {
+        return await OpenReplica.updateMicroagent(agent.name, microagentData);
+      } else {
+        return await OpenReplica.createMicroagent(microagentData);
       }
     },
     onSuccess: () => {

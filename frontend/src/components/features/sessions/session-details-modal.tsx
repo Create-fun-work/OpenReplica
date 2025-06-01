@@ -24,7 +24,7 @@ import {
   ClockIcon
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { openreplica } from '#/api/openreplica-axios';
+import OpenReplica from '#/api/openreplica';
 
 interface Session {
   session_id: string;
@@ -66,8 +66,7 @@ export function SessionDetailsModal({
   const { data: messagesData, isLoading: messagesLoading } = useQuery({
     queryKey: ['session-messages', session.session_id],
     queryFn: async () => {
-      const response = await openreplica.get(`/api/sessions/${session.session_id}/messages`);
-      return response.data;
+      return await OpenReplica.getSessionMessages(session.session_id);
     },
     enabled: isOpen,
   });
@@ -76,8 +75,7 @@ export function SessionDetailsModal({
   const { data: eventsData, isLoading: eventsLoading } = useQuery({
     queryKey: ['session-events', session.session_id],
     queryFn: async () => {
-      const response = await openreplica.get(`/api/sessions/${session.session_id}/events`);
-      return response.data;
+      return await OpenReplica.getSessionEvents(session.session_id);
     },
     enabled: isOpen,
   });
@@ -85,10 +83,7 @@ export function SessionDetailsModal({
   // Add message mutation
   const addMessageMutation = useMutation({
     mutationFn: async (content: string) => {
-      return await openreplica.post(`/api/sessions/${session.session_id}/messages`, {
-        content,
-        role: 'user'
-      });
+      return await OpenReplica.addSessionMessage(session.session_id, content, 'user');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['session-messages', session.session_id] });

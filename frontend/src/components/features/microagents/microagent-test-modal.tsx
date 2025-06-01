@@ -14,7 +14,7 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import { PlayIcon, CheckCircleIcon, XCircleIcon } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { openreplica } from '#/api/openreplica-axios';
+import OpenReplica from '#/api/openreplica';
 
 interface Microagent {
   name: string;
@@ -54,10 +54,7 @@ export function MicroagentTestModal({
   // Test mutation
   const testMutation = useMutation({
     mutationFn: async (message: string) => {
-      const response = await openreplica.post(`/api/microagents/${agent.name}/test`, {
-        message
-      });
-      return response.data as TestResult;
+      return await OpenReplica.testMicroagent(agent.name, message) as TestResult;
     },
     onSuccess: (result) => {
       setTestResult(result);

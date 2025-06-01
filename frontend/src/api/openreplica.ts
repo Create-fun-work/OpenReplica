@@ -373,6 +373,99 @@ class OpenReplica {
 
     return data;
   }
+
+  // ========================================
+  // OpenReplica Custom Features API Methods
+  // ========================================
+
+  /**
+   * Microagents Management API
+   */
+  static async getMicroagents(type?: string): Promise<any[]> {
+    const params = type ? `?microagent_type=${type}` : '';
+    const { data } = await openreplica.get(`/api/microagents${params}`);
+    return data;
+  }
+
+  static async getMicroagent(name: string): Promise<any> {
+    const { data } = await openreplica.get(`/api/microagents/${name}`);
+    return data;
+  }
+
+  static async createMicroagent(microagent: any): Promise<any> {
+    const { data } = await openreplica.post('/api/microagents/', microagent);
+    return data;
+  }
+
+  static async updateMicroagent(name: string, microagent: any): Promise<any> {
+    const { data } = await openreplica.put(`/api/microagents/${name}`, microagent);
+    return data;
+  }
+
+  static async deleteMicroagent(name: string): Promise<void> {
+    await openreplica.delete(`/api/microagents/${name}`);
+  }
+
+  static async testMicroagent(name: string, message: string): Promise<any> {
+    const { data } = await openreplica.post(`/api/microagents/${name}/test`, { message });
+    return data;
+  }
+
+  static async getMicroagentTemplates(): Promise<any> {
+    const { data } = await openreplica.get('/api/microagents/builtin/templates');
+    return data;
+  }
+
+  static async importMicroagent(name: string, content: string): Promise<any> {
+    const { data } = await openreplica.post('/api/microagents/import', { name, content });
+    return data;
+  }
+
+  static async exportMicroagent(name: string): Promise<any> {
+    const { data } = await openreplica.post(`/api/microagents/${name}/export`);
+    return data;
+  }
+
+  /**
+   * Sessions Management API
+   */
+  static async getSessions(): Promise<{ sessions: any[] }> {
+    const { data } = await openreplica.get('/api/sessions/');
+    return data;
+  }
+
+  static async getSession(sessionId: string): Promise<any> {
+    const { data } = await openreplica.get(`/api/sessions/${sessionId}`);
+    return data;
+  }
+
+  static async createSession(session: any): Promise<any> {
+    const { data } = await openreplica.post('/api/sessions/create', session);
+    return data;
+  }
+
+  static async deleteSession(sessionId: string): Promise<void> {
+    await openreplica.delete(`/api/sessions/${sessionId}`);
+  }
+
+  static async getSessionMessages(sessionId: string): Promise<{ messages: any[] }> {
+    const { data } = await openreplica.get(`/api/sessions/${sessionId}/messages`);
+    return data;
+  }
+
+  static async addSessionMessage(sessionId: string, content: string, role: string = 'user'): Promise<any> {
+    const { data } = await openreplica.post(`/api/sessions/${sessionId}/messages`, { content, role });
+    return data;
+  }
+
+  static async getSessionEvents(sessionId: string): Promise<{ events: any[] }> {
+    const { data } = await openreplica.get(`/api/sessions/${sessionId}/events`);
+    return data;
+  }
+
+  static async addSessionEvent(sessionId: string, eventData: any): Promise<void> {
+    await openreplica.post(`/api/sessions/${sessionId}/events`, eventData);
+  }
 }
 
 export default OpenReplica;

@@ -12,7 +12,7 @@ import {
 } from '@heroui/react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
-import { openreplica } from '#/api/openreplica-axios';
+import OpenReplica from '#/api/openreplica';
 
 interface CreateSessionModalProps {
   isOpen: boolean;
@@ -36,23 +36,21 @@ export function CreateSessionModal({
   const { data: agents = [] } = useQuery({
     queryKey: ['agents'],
     queryFn: async () => {
-      const response = await openreplica.get('/api/options/agents');
-      return response.data;
+      return await OpenReplica.getAgents();
     },
   });
 
   const { data: models = [] } = useQuery({
     queryKey: ['models'],
     queryFn: async () => {
-      const response = await openreplica.get('/api/options/models');
-      return response.data;
+      return await OpenReplica.getModels();
     },
   });
 
   // Create session mutation
   const mutation = useMutation({
     mutationFn: async (data: typeof formData) => {
-      return await openreplica.post('/api/sessions/create', data);
+      return await OpenReplica.createSession(data);
     },
     onSuccess: (response) => {
       toast.success('Session created successfully');

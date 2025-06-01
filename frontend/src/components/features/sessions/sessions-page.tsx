@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { Button, Card, CardBody, CardHeader, Chip, Tooltip } from '@heroui/react';
 import { toast } from 'react-hot-toast';
-import { openreplica } from '#/api/openreplica-axios';
+import OpenReplica from '#/api/openreplica';
 import { CreateSessionModal } from './create-session-modal';
 import { SessionDetailsModal } from './session-details-modal';
 
@@ -42,8 +42,7 @@ export function SessionsPage({ className = "" }: SessionsPageProps) {
   const { data: sessionsData, isLoading, error } = useQuery({
     queryKey: ['sessions'],
     queryFn: async () => {
-      const response = await openreplica.get('/api/sessions/');
-      return response.data;
+      return await OpenReplica.getSessions();
     },
     refetchInterval: 5000, // Refresh every 5 seconds
   });
@@ -53,7 +52,7 @@ export function SessionsPage({ className = "" }: SessionsPageProps) {
   // Delete session mutation
   const deleteMutation = useMutation({
     mutationFn: async (sessionId: string) => {
-      await openreplica.delete(`/api/sessions/${sessionId}`);
+      await OpenReplica.deleteSession(sessionId);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['sessions'] });
