@@ -7,6 +7,8 @@ import { DocsButton } from "#/components/shared/buttons/docs-button";
 import { NewProjectButton } from "#/components/shared/buttons/new-project-button";
 import { SettingsButton } from "#/components/shared/buttons/settings-button";
 import { ConversationPanelButton } from "#/components/shared/buttons/conversation-panel-button";
+import { MicroagentsButton } from "#/components/shared/buttons/microagents-button";
+import { SessionsButton } from "#/components/shared/buttons/sessions-button";
 import { SettingsModal } from "#/components/shared/modals/settings/settings-modal";
 import { useSettings } from "#/hooks/query/use-settings";
 import { ConversationPanel } from "../conversation-panel/conversation-panel";
@@ -74,6 +76,8 @@ export function Sidebar() {
               isOpen={conversationPanelIsOpen}
               onClick={() => setConversationPanelIsOpen((prev) => !prev)}
             />
+            <MicroagentsButton />
+            <SessionsButton />
           </div>
 
           <div className="flex flex-row md:flex-col md:items-center gap-[26px] md:mb-4">
