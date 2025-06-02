@@ -1,0 +1,116 @@
+# OpenReplica Full-Stack Docker Compose
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: openreplica-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - PYTHONPATH=/app
+      - OPENREPLICA_ENV=production
+      - BACKEND_HOST=0.0.0.0
+      - BACKEND_PORT=3000
+    volumes:
+      - ./backend:/app
+      - backend_data:/app/data
+    networks:
+      - openreplica-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: openreplica-frontend
+    ports:
+      - "3001:3001"
+    environment:
+      - VITE_BACKEND_HOST=backend:3000
+      - VITE_BACKEND_BASE_URL=backend:3000
+      - NODE_ENV=production
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - openreplica-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  redis:
+    image: redis:7-alpine
+    container_name: openreplica-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - openreplica-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  openreplica-network:
+    driver: bridge
+    name: openreplica
+
+volumes:
+  backend_data:
+    driver: local
+    name: openreplica_backend_data
+  redis_data:
+    driver: local
+    name: openreplica_redis_data
+
+# Development override
+# Use: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+---
+version: '3.8'
+
+# Development configuration in same file for convenience
+x-development: &development
+  services:
+    backend:
+      build:
+        context: ./backend
+        dockerfile: Dockerfile
+        target: development
+      volumes:
+        - ./backend:/app
+        - /app/node_modules
+      environment:
+        - OPENREPLICA_ENV=development
+        - DEBUG=true
+      command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "3000", "--reload", "--log-level", "debug"]
+    
+    frontend:
+      build:
+        context: ./frontend
+        dockerfile: Dockerfile
+        target: development
+      volumes:
+        - ./frontend:/app
+        - /app/node_modules
+      environment:
+        - NODE_ENV=development
+        - VITE_BACKEND_HOST=localhost:3000
+      command: ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "3001"]
