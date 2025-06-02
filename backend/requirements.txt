@@ -43,15 +43,21 @@ runloop-api-client>=0.33.0
 libtmux>=0.37,<0.40
 pygithub>=2.5.0
 joblib>=1.0.0
+openhands-aci>=0.2.14
 psutil>=5.0.0
 stripe>=11.5,<13.0
 ipywidgets>=8.1.5
 qtconsole>=5.6.1
 memory-profiler>=0.61.0
+daytona-sdk>=0.18.1
 prompt-toolkit>=3.0.50
 anyio>=4.9.0
+pythonnet>=3.0.0
+fastmcp>=2.3.3
+mcpm>=1.12.0
 
 # Browsing capabilities
+browsergym-core>=0.13.3
 html2text>=2020.1.16
 
 # Database and storage
