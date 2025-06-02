@@ -36,27 +36,7 @@ COPY frontend/nginx.conf /etc/nginx/nginx.conf
 
 # Create supervisor configuration for running both services
 RUN mkdir -p /etc/supervisor/conf.d
-RUN cat > /etc/supervisor/conf.d/supervisord.conf << 'EOF'
-[supervisord]
-nodaemon=true
-user=root
-
-[program:backend]
-command=uvicorn app.main:app --host 127.0.0.1 --port 3000
-directory=/app
-autostart=true
-autorestart=true
-stderr_logfile=/var/log/backend.err.log
-stdout_logfile=/var/log/backend.out.log
-environment=PYTHONPATH="/app"
-
-[program:nginx]
-command=nginx -g "daemon off;"
-autostart=true
-autorestart=true
-stderr_logfile=/var/log/nginx.err.log
-stdout_logfile=/var/log/nginx.out.log
-EOF
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Update nginx config to proxy to localhost instead of backend service
 RUN sed -i 's/backend:3000/127.0.0.1:3000/g' /etc/nginx/nginx.conf

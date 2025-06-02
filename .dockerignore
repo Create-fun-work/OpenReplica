@@ -47,6 +47,7 @@ backend/**/*.pyc
 docker-compose*.yml
 Dockerfile*
 .dockerignore
+!supervisord.conf
 
 # Ignore CI/CD
 .github/
