@@ -1,0 +1,1 @@
+import{u as o}from"./useQuery-DWIXfx2p.js";import{O as s}from"./openreplica-BrXrJP4h.js";import{a}from"./chunk-DQRVZFIR-DmpYUBnv.js";const n=()=>{const{pathname:e}=a();return e==="/accept-tos"},u=()=>{const e=n();return o({queryKey:["config"],queryFn:s.getConfig,staleTime:1e3*60*5,gcTime:1e3*60*15,enabled:!e})};export{n as a,u};

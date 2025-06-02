@@ -9,7 +9,7 @@ import uuid
 
 from app.core.logger import openreplica_logger as logger
 
-router = APIRouter(prefix='/api/sessions')
+app = APIRouter(prefix='/api/sessions')
 
 # In-memory store for demo (use database in production)
 active_sessions: Dict[str, Dict[str, Any]] = {}
@@ -42,7 +42,7 @@ class SessionMessage(BaseModel):
     event_type: Optional[str] = None
 
 
-@router.post("/create")
+@app.post("/create")
 async def create_session(request: CreateSessionRequest) -> SessionResponse:
     """Create a new session"""
     session_id = str(uuid.uuid4())
@@ -84,7 +84,7 @@ async def create_session(request: CreateSessionRequest) -> SessionResponse:
     )
 
 
-@router.get("/{session_id}")
+@app.get("/{session_id}")
 async def get_session(session_id: str) -> SessionResponse:
     """Get session information"""
     if session_id not in active_sessions:
@@ -105,7 +105,7 @@ async def get_session(session_id: str) -> SessionResponse:
     )
 
 
-@router.get("/")
+@app.get("/")
 async def list_sessions() -> Dict[str, List[SessionResponse]]:
     """List all active sessions"""
     sessions = []
@@ -125,7 +125,7 @@ async def list_sessions() -> Dict[str, List[SessionResponse]]:
     return {"sessions": sessions}
 
 
-@router.delete("/{session_id}")
+@app.delete("/{session_id}")
 async def delete_session(session_id: str) -> Dict[str, str]:
     """Delete a session"""
     if session_id not in active_sessions:
@@ -142,7 +142,7 @@ async def delete_session(session_id: str) -> Dict[str, str]:
     return {"message": f"Session {session_id} deleted successfully"}
 
 
-@router.get("/{session_id}/messages")
+@app.get("/{session_id}/messages")
 async def get_session_messages(session_id: str) -> Dict[str, List[SessionMessage]]:
     """Get messages for a session"""
     if session_id not in active_sessions:
@@ -157,7 +157,7 @@ async def get_session_messages(session_id: str) -> Dict[str, List[SessionMessage
     return {"messages": messages}
 
 
-@router.post("/{session_id}/messages")
+@app.post("/{session_id}/messages")
 async def add_session_message(
     session_id: str, 
     content: str,
@@ -193,7 +193,7 @@ async def add_session_message(
     return SessionMessage(**message)
 
 
-@router.get("/{session_id}/events")
+@app.get("/{session_id}/events")
 async def get_session_events(session_id: str) -> Dict[str, List[Dict[str, Any]]]:
     """Get events for a session"""
     if session_id not in active_sessions:
@@ -203,7 +203,7 @@ async def get_session_events(session_id: str) -> Dict[str, List[Dict[str, Any]]]
     return {"events": session["events"]}
 
 
-@router.post("/{session_id}/events")
+@app.post("/{session_id}/events")
 async def add_session_event(
     session_id: str,
     event_data: Dict[str, Any]
@@ -239,5 +239,4 @@ def get_session_by_id(session_id: str) -> Dict[str, Any]:
     return active_sessions[session_id]
 
 
-# Export router as app for consistency with other route modules
-app = router
+# Export app for consistency with other route modules

@@ -1,0 +1,37 @@
+<svg viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="purpleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#A855F7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#C084FC;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Logo Icon -->
+  <g transform="translate(10, 10)">
+    <!-- Outer ring -->
+    <circle cx="20" cy="20" r="18" fill="none" stroke="url(#purpleGradient)" stroke-width="2" filter="url(#glow)"/>
+    
+    <!-- Inner hexagon representing AI structure -->
+    <polygon points="20,8 32,14 32,26 20,32 8,26 8,14" fill="url(#purpleGradient)" opacity="0.3"/>
+    
+    <!-- Central node -->
+    <circle cx="20" cy="20" r="6" fill="url(#purpleGradient)" filter="url(#glow)"/>
+    
+    <!-- Connection lines -->
+    <line x1="14" y1="14" x2="26" y2="26" stroke="#C084FC" stroke-width="1" opacity="0.7"/>
+    <line x1="26" y1="14" x2="14" y2="26" stroke="#C084FC" stroke-width="1" opacity="0.7"/>
+    <line x1="20" y1="8" x2="20" y2="32" stroke="#C084FC" stroke-width="1" opacity="0.7"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="55" y="25" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="url(#purpleGradient)">OpenReplica</text>
+  <text x="55" y="40" font-family="Arial, sans-serif" font-size="8" fill="#9CA3AF">Advanced AI Agent Platform</text>
+</svg>

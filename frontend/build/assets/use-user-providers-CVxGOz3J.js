@@ -1,0 +1,1 @@
+import{u as t}from"./use-settings-rDyU6eEY.js";const e=r=>{if(!r)return[];const s=[];for(const o of Object.keys(r))o&&s.push(o);return s},i=()=>{const{data:r}=t();return{providers:e(r==null?void 0:r.PROVIDER_TOKENS_SET)}};export{i as u};
